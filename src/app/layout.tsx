@@ -73,7 +73,14 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-/** Consumed by search engines; kept in sync with src/data/profile.ts. */
+/**
+ * Consumed by search engines; kept in sync with src/data/profile.ts.
+ *
+ * Deliberately carries no `telephone`. The number is still published — it is a
+ * `tel:` link in the Contact section — but putting it here too hands scrapers a
+ * parsed, labelled field rather than one anchor they have to find, which is a
+ * meaningful difference in spam exposure for no SEO gain.
+ */
 const personJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Person',
@@ -81,7 +88,6 @@ const personJsonLd = {
   jobTitle: profile.role,
   description: profile.bio,
   email: `mailto:${profile.contact.email}`,
-  telephone: profile.contact.phone,
   url: SITE_URL,
   address: {
     '@type': 'PostalAddress',
