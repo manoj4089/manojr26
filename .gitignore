@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# 3d authoring sources — .blend files and the source texture PNGs they bake from.
+# ~39MB of binaries that nothing in the build reads: the site loads the exported
+# public/models/*.glb, which IS committed. Kept out of history so clones stay
+# small. These are not reproducible from the repo, so back them up elsewhere.
+/.blender_build/
