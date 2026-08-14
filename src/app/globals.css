@@ -1,0 +1,286 @@
+@import 'tailwindcss';
+
+/* ==========================================================================
+   DESIGN TOKENS
+   Editorial + experimental: near-black ground, warm white type, acid accent,
+   electric purple/blue reserved for the WebGL layer.
+   ========================================================================== */
+
+@theme {
+  --color-ink: #050505;
+  --color-ink-2: #0b0b0d;
+  --color-ink-3: #131316;
+  --color-bone: #f4f1e8;
+  --color-bone-dim: #a8a49a;
+  --color-acid: #c8f31d;
+  --color-acid-hi: #d4ff3f;
+  --color-volt: #6b4cff;
+  --color-electric: #2b6bff;
+  --color-hairline: rgb(255 255 255 / 0.12);
+  --color-hairline-soft: rgb(255 255 255 / 0.06);
+
+  --font-display: var(--font-archivo), 'Arial Black', sans-serif;
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-ui: cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+/* --------------------------------------------------------------------------
+   RUNTIME VARIABLES
+   --bg / --fg are plain CSS vars (not @theme) because GSAP tweens them at
+   section boundaries and the WebGL layer reads the computed value to keep its
+   clear colour in sync. Registering --bg with @property makes it interpolable.
+   --sv is scroll velocity, normalised to -1..1, written exactly once per frame
+   by ScrollPublisher. Any purely decorative velocity effect is then pure CSS.
+   -------------------------------------------------------------------------- */
+
+@property --bg {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #050505;
+}
+@property --fg {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #f4f1e8;
+}
+@property --wdth {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 100;
+}
+
+:root {
+  --bg: #050505;
+  --fg: #f4f1e8;
+  --sv: 0;
+
+  /* z-index ladder — documented here so nothing invents its own value.
+     mix-blend-mode on the grain creates a stacking context; anything that must
+     sit above it needs a value from this list and an isolated parent. */
+  --z-canvas: 0;
+  --z-content: 10;
+  --z-grain: 40;
+  --z-nav: 50;
+  --z-overlay: 70;
+  --z-cursor: 90;
+  --z-preloader: 100;
+}
+
+/* ==========================================================================
+   BASE
+   ========================================================================== */
+
+* {
+  min-width: 0;
+}
+
+html {
+  /* Lenis drives scroll; native smooth scrolling would fight it. */
+  scroll-behavior: auto;
+  -webkit-text-size-adjust: 100%;
+  /* Must sit on html as well as body — a clip on body alone still lets an
+     overflowing descendant grow the document's scroll width. `clip` rather than
+     `hidden` because `hidden` on html would create a scroll container and break
+     position: sticky further down the tree. */
+  overflow-x: clip;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-acid);
+  color: var(--color-ink);
+}
+
+/* Keyboard focus stays visible everywhere; pointer focus does not. */
+:focus-visible {
+  outline: 2px solid var(--color-acid);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Hide the native cursor only where the custom one is actually running. */
+body[data-custom-cursor='true'],
+body[data-custom-cursor='true'] * {
+  cursor: none;
+}
+
+/* --------------------------------------------------------------------------
+   DISPLAY TYPE
+   Archivo is loaded as a variable font with the width axis exposed, so scroll
+   velocity can physically condense the headline instead of faking it with
+   scaleX. --wdth is driven by a GSAP quickSetter.
+   -------------------------------------------------------------------------- */
+
+.display {
+  font-family: var(--font-display);
+  font-variation-settings:
+    'wght' var(--wght, 800),
+    'wdth' var(--wdth, 100);
+  font-weight: 800;
+  line-height: 0.82;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.display-tight {
+  line-height: 0.78;
+  letter-spacing: -0.045em;
+}
+
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: clamp(0.625rem, 0.75vw, 0.6875rem);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-bone-dim);
+}
+
+/* ==========================================================================
+   UTILITIES
+   ========================================================================== */
+
+/* Tailwind v4 removed the default border colour, so bare `border` would be
+   currentColor. Always use this instead. */
+@utility hairline {
+  border-color: var(--color-hairline);
+}
+
+@utility isolate-layer {
+  isolation: isolate;
+}
+
+/* Masks a block so its children can be revealed by translating out of it. */
+@utility reveal-mask {
+  overflow: hidden;
+  display: block;
+}
+
+@utility edge-x {
+  padding-inline: clamp(1.25rem, 4vw, 4rem);
+}
+
+/* ==========================================================================
+   GRAIN
+   A fixed tiled noise layer at the top of the stack. Stepped animation (not
+   smooth) so it reads as film grain rather than a moving gradient.
+   ========================================================================== */
+
+.grain {
+  position: fixed;
+  inset: -150%;
+  z-index: var(--z-grain);
+  pointer-events: none;
+  background-image: url('/textures/grain.png');
+  background-repeat: repeat;
+  opacity: 0.055;
+  mix-blend-mode: overlay;
+  will-change: transform;
+  animation: grain-shift 0.6s steps(3) infinite;
+}
+
+@keyframes grain-shift {
+  0% { transform: translate3d(0, 0, 0); }
+  33% { transform: translate3d(-2%, 1.5%, 0); }
+  66% { transform: translate3d(1.5%, -2%, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+/* ==========================================================================
+   WORK — horizontal mode
+   The section ships as a vertical stack so every project is reachable without
+   JS. Phase 5 stamps data-horizontal="true" on the viewport once the desktop pin
+   is active; only then does the track become a clipped horizontal row. The clip
+   lives here rather than on the element because an unclipped 288vw track would
+   otherwise grow the document's horizontal scroll width.
+   ========================================================================== */
+
+@media (min-width: 1024px) {
+  [data-work-viewport][data-horizontal='true'] {
+    overflow: hidden;
+  }
+
+  [data-work-viewport][data-horizontal='true'] [data-work-track] {
+    flex-direction: row;
+    align-items: center;
+    height: 100svh;
+    gap: 8vw;
+    will-change: transform;
+  }
+
+  [data-work-viewport][data-horizontal='true'] [data-work-card] {
+    width: min(72vw, 64rem);
+    flex-shrink: 0;
+  }
+
+  [data-work-viewport][data-horizontal='true'] ~ [data-work-hint] {
+    display: block;
+  }
+}
+
+/* ==========================================================================
+   MARQUEE
+   CSS-driven so it runs with JS disabled. When the Phase 8 client wrapper takes
+   over it stamps data-js-driven on the track, which cancels the CSS animation so
+   GSAP's transform is the only thing writing to the element.
+   ========================================================================== */
+
+.marquee {
+  overflow: hidden;
+  width: 100%;
+  /* Fade the ends into the background rather than hard-cutting them. */
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+
+.marquee__track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: marquee-scroll var(--marquee-duration, 30s) linear infinite;
+  animation-direction: var(--marquee-direction, normal);
+}
+
+.marquee:hover .marquee__track {
+  animation-play-state: paused;
+}
+
+.marquee__track[data-js-driven='true'] {
+  animation: none;
+}
+
+@keyframes marquee-scroll {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* ==========================================================================
+   MOTION PREFERENCES
+   The real reduced-motion handling is a gsap.matchMedia branch per section.
+   This block only neutralises CSS-driven motion, which GSAP cannot revert.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .grain {
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
