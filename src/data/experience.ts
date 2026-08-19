@@ -1,13 +1,4 @@
-/**
- * NOTE ON SOURCING: the v1 portfolio had no structured experience section — these
- * entries are reconstructed from the prose facts it did state (trained since 2024,
- * promoted trainee → engineer in five months, hands-on with a national bank's
- * frontend validation and QA, Oracle Java SE 11, solo AI product builds in 2025).
- *
- * TODO(user): `org` is intentionally left generic — v1 never named an employer, only
- * "a national bank" as the client. Fill in the real company name(s) and exact month
- * ranges here; nothing else in the codebase needs to change.
- */
+/** Sourced from Manoj's resume (Resume_Manoj_R.pdf). */
 
 export interface ExperienceEntry {
   id: string;
@@ -18,38 +9,25 @@ export interface ExperienceEntry {
   current?: boolean;
   body: string;
   tags: string[];
-  /** Set where a fact still needs the user's confirmation. */
-  needsInput?: boolean;
 }
 
 export const experience: ExperienceEntry[] = [
   {
-    id: 'ai-product',
-    period: '2025 — Present',
-    role: 'Software Engineer · AI Application Builder',
-    org: 'TODO — confirm employer',
-    current: true,
-    needsInput: true,
-    body: 'Directing AI coding tools to architect, build and ship complete products solo — from data model and API design through frontend, deployment and iteration. Biasly and Spill both came out of this workflow.',
-    tags: ['Next.js', 'Node.js', 'MongoDB', 'Claude Code'],
-  },
-  {
-    id: 'engineer',
-    period: '2024',
+    id: 'software-engineer',
+    period: 'Nov 2024 — Present',
     role: 'Software Engineer',
-    org: 'TODO — confirm employer',
-    needsInput: true,
-    body: 'Promoted from trainee to engineer within five months. Hands-on with a national bank’s frontend validation and QA — structural UI comparison and UAT/production consistency checks at bank-grade rigor.',
-    tags: ['Angular', 'TypeScript', 'QA', 'UAT'],
+    org: 'LTM Company',
+    current: true,
+    body: 'Promoted from Trainee to Software Engineer within five months. Working on full-stack development using Java, Spring Boot, Angular, TypeScript and SQL — applying OOP principles and RESTful API design to build scalable backend services, with Git/GitHub for collaborative version control.',
+    tags: ['Java', 'Spring Boot', 'Angular', 'TypeScript', 'SQL'],
   },
   {
     id: 'trainee',
-    period: '2024',
-    role: 'Trainee — Full-Stack Track',
-    org: 'TODO — confirm employer',
-    needsInput: true,
-    body: 'Comprehensive training across Java, Spring Boot, Angular, TypeScript and SQL — the foundation for the engineering role that followed. Certified Oracle Java SE 11 Developer during this period.',
-    tags: ['Java', 'Spring Boot', 'Angular', 'SQL'],
+    period: 'Jun 2024 — Nov 2024',
+    role: 'Software Developer Trainee',
+    org: 'LTM Company',
+    body: 'Completed comprehensive training in Java Full-Stack Development. Worked as a Frontend Developer — validated and tested web page structures across UAT and Production environments to ensure consistency and accuracy, and trained in Adobe Analytics, Data Collection and Marketo.',
+    tags: ['Java', 'Spring Boot', 'Angular', 'SQL', 'UAT Testing'],
   },
 ];
 

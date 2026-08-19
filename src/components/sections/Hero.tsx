@@ -116,6 +116,26 @@ export function Hero() {
           */}
           <div className="absolute inset-0 bg-[linear-gradient(90deg,var(--color-ink)_0%,rgba(5,5,5,0.88)_26%,rgba(5,5,5,0.45)_46%,transparent_66%)]" />
           <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-ink to-transparent" />
+          {/*
+            Scrim for the stats column. The 90deg gradient above is fully
+            transparent past 66%, so the top-right — measured at x 1126–1382,
+            y 186–544 on a 1440×900 window — is bare plate, and that is exactly
+            where the rim-light streaks blow out. Bare text-shadow was never
+            going to win against them.
+
+            A radial falloff rather than a box, so it reads as vignette on the
+            photograph rather than a panel bolted over it. That keeps the intent
+            of the note below — the plate stays visible between the glyphs —
+            while actually delivering contrast.
+
+            The radii are explicit (22rem × 17rem) and the element is full
+            bleed, which matters: sizing the ELEMENT to the scrim instead leaves
+            the gradient still ~14% opaque where the box ends, and that step
+            renders as a hard vertical seam straight down the rim-light streaks.
+            Letting the gradient reach transparent on its own terms, well inside
+            a box that never clips it, is what removes the edge.
+          */}
+          <div className="absolute inset-0 bg-[radial-gradient(22rem_17rem_at_87%_40%,rgba(5,5,5,0.95)_0%,rgba(5,5,5,0.86)_35%,rgba(5,5,5,0.5)_62%,transparent_100%)]" />
         </div>
 
         <div className="edge-x relative z-10 lg:pl-[7.5rem]">

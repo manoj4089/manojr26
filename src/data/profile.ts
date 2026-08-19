@@ -4,6 +4,9 @@
  */
 
 export const profile = {
+  /** Canonical domain — the single source of truth for metadata, sitemap, robots, JSON-LD and OG images. */
+  siteUrl: 'https://manojr.online',
+
   name: 'Manoj R.',
   /** Split for the hero — each part animates on its own track. */
   nameParts: ['MANOJ', 'R.'],
@@ -47,7 +50,7 @@ export const profile = {
   socials: [
     {
       label: 'LinkedIn',
-      href: 'https://linkedin.com/in/manoj-r-d391093b7',
+      href: 'https://linkedin.com/in/manoj-r-6391091b7',
       handle: 'manoj-r',
     },
     {
