@@ -2,7 +2,6 @@ import type { StaticImageData } from 'next/image';
 
 import biaslyHome from '@/assets/work/biasly-home.webp';
 import spillLanding from '@/assets/work/spill-landing.webp';
-import portfolioV2 from '@/assets/work/portfolio-v2.webp';
 import kgGoatFarm from '@/assets/work/kg-goat-farm.webp';
 import spillDemoPoster from '@/assets/work/spill-demo-poster.webp';
 
@@ -50,20 +49,21 @@ export const projects: Project[] = [
     blurb:
       'A full-stack platform that detects political bias, framing, and sentiment across major news sources — architected and shipped solo with AI coding tools.',
     caseStudy: {
-      role: 'Solo — architecture, backend, frontend, deployment',
+      role: 'Solo — architecture, backend, pipeline engineering, deployment',
       body: [
-        'Biasly reads a news article and returns a structured read on how it is telling the story: where it sits politically, how it frames its subjects, and what sentiment it carries. The goal was never to label an outlet good or bad — it was to make the mechanics of framing visible enough that a reader can judge for themselves.',
-        'The whole system was designed and built solo, directing AI coding tools through architecture, data modelling, implementation, and release. That workflow is the point of the project as much as the product is: scoping the spec tightly enough that an AI pair can execute against it, then reviewing and hardening every layer that comes back.',
+        'Biasly runs a fully automated pipeline: Oxylabs scrapes configured news sources hourly, candidate links are filtered against a reject list (category pages, podcasts, product pages and more), and surviving articles are validated against strict content gates — 900+ characters or 3+ paragraphs, an image, a published date — before being stored append-only with URL-based deduplication. Pending articles are then picked up by Vercel AI SDK calling OpenAI/Groq models, which return a structured analysis: a sentiment score and label, left/center/right percentages that sum to 100, a derived bias score, a framing label, and a confidence score. Framing is deliberately surfaced as "AI-estimated," never asserted as fact — the model reasons from article text alone, not source reputation.',
+        'The parts that made this a real production system rather than a demo: pending-article detection uses a LEFT JOIN against the analysis table instead of checking a null timestamp, so it survives deleted rows and doubles as the mechanism for backfilling pgvector embeddings later without re-running analysis. Oxylabs job and schedule IDs are 64-bit integers that exceed JavaScript’s safe-integer range, so they get pulled out of the raw HTTP response via regex before anything touches JSON.parse. And because deleted-and-recreated source rows would otherwise leave orphaned Oxylabs schedules running — and billing — indefinitely, a sync routine diffs live schedules against the database and deactivates anything no longer present.',
       ],
       highlights: [
-        'Bias, framing and sentiment analysis across multiple major news sources',
-        'End-to-end solo build — architecture through production deployment',
-        'AI-directed engineering workflow: scope → direct → validate → ship',
+        'Five-stage automated pipeline: Oxylabs scraping → validation/dedup → AI analysis → pgvector embeddings → hourly Vercel Cron scheduling',
+        'Structured bias output — sentiment score, left/center/right split, framing label, confidence — always presented as AI-estimated, never as fact',
+        'Production-grade edge cases handled: 64-bit ID precision loss, orphaned schedule cleanup, append-only storage with URL dedup',
       ],
     },
-    stack: ['Next.js', 'TypeScript', 'Node.js', 'NLP', 'Claude Code'],
+    stack: ['Next.js', 'TypeScript', 'Supabase', 'Vercel AI SDK', 'Oxylabs', 'pgvector', 'Claude Code'],
     image: biaslyHome,
-    // TODO(user): add liveUrl / repoUrl once available — v1 had no links for this project.
+    liveUrl: 'https://biasly.app',
+    repoUrl: 'https://github.com/manoj4089/biasly',
   },
   {
     id: 'spill',
@@ -90,35 +90,11 @@ export const projects: Project[] = [
     image: spillDemoPoster,
     video: '/work/spill-demo.mp4',
     gallery: [spillLanding],
-    // TODO(user): add liveUrl / repoUrl once available.
-  },
-  {
-    id: 'portfolio-v2',
-    index: '03',
-    title: 'PORTFOLIO',
-    subtitle: 'V2 — This Site',
-    year: '2026',
-    blurb:
-      'A scroll-driven portfolio where the animation is the product: one WebGL canvas, one frame loop, and GSAP driving every transition.',
-    caseStudy: {
-      role: 'Solo — design direction, engineering, motion',
-      body: [
-        'This site is built as a single scroll experience rather than a stack of sections. Lenis drives inertia scrolling, GSAP ScrollTrigger drives every reveal and pin, and a single persistent Three.js canvas sits behind the DOM rendering off the same frame loop — so the WebGL never lags a frame behind the layout it is tracking.',
-        'The architectural constraint that shaped everything: per-frame values never touch React state. Scroll position, velocity and section progress live in a mutable singleton that shaders and GSAP setters read directly, while React only handles state a human could count. That split is the difference between 60fps and 25.',
-      ],
-      highlights: [
-        'One persistent WebGL canvas driven off the GSAP ticker — zero frame lag',
-        'Custom GLSL: noise-displaced blob, liquid metal, image distortion',
-        'Zero React re-renders during scroll',
-      ],
-    },
-    stack: ['Next.js', 'TypeScript', 'GSAP', 'Three.js', 'Lenis', 'Tailwind'],
-    image: portfolioV2,
-    // TODO(user): swap portfolio-v2.webp for a real screenshot of the finished site (Phase 8).
+    placeholder: true,
   },
   {
     id: 'kg-goat-farm',
-    index: '04',
+    index: '03',
     title: 'KG GOAT FARM',
     subtitle: 'Wholesale Farm Site',
     year: '2026',
@@ -138,8 +114,8 @@ export const projects: Project[] = [
     },
     stack: ['HTML', 'CSS', 'JavaScript', 'GSAP', 'Lenis', 'FFmpeg', 'Playwright'],
     image: kgGoatFarm,
+    liveUrl: 'https://manoj4089.github.io/kg-project/',
     repoUrl: 'https://github.com/manoj4089/kg-project',
-    // TODO(user): add liveUrl once the site is deployed.
   },
 ];
 

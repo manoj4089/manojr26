@@ -28,7 +28,7 @@ const geistMono = Geist_Mono({
   display: 'swap',
 });
 
-const SITE_URL = 'https://manojr.vercel.app';
+const SITE_URL = profile.siteUrl;
 const description = `${profile.role} · ${profile.roleSecondary}. ${profile.tagline}`;
 
 export const metadata: Metadata = {
@@ -39,17 +39,23 @@ export const metadata: Metadata = {
   },
   description,
   applicationName: `${profile.name} Portfolio`,
-  authors: [{ name: profile.name }],
+  authors: [{ name: profile.name, url: SITE_URL }],
   creator: profile.name,
   keywords: [
     'Manoj R',
+    'Manoj R software engineer',
     'Software Engineer',
     'Java Full-Stack Developer',
-    'Next.js',
-    'Spring Boot',
+    'Next.js Developer',
+    'Spring Boot Developer',
     'AI Application Builder',
-    'Chennai',
+    'Claude Code developer',
+    'Chennai software engineer',
+    'India remote developer',
   ],
+  alternates: {
+    canonical: SITE_URL,
+  },
   openGraph: {
     type: 'website',
     url: SITE_URL,
@@ -63,7 +69,16 @@ export const metadata: Metadata = {
     title: `${profile.name} — ${profile.role}`,
     description,
   },
-  robots: { index: true, follow: true },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 };
 
 export const viewport: Viewport = {

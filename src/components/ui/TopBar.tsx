@@ -16,7 +16,7 @@ export function TopBar() {
           className="display text-xl leading-none tracking-tight text-bone transition-colors duration-300 hover:text-acid"
           aria-label={`${profile.name} — back to top`}
         >
-          MR<span className="text-acid">.</span>
+          MANOJ<span className="text-acid">R</span>
         </a>
 
         <nav aria-label="Primary" className="hidden md:block">

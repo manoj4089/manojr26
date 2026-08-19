@@ -76,16 +76,27 @@ export function SideNav() {
     <nav
       ref={container}
       aria-label="Section navigation"
-      className="fixed left-0 top-0 z-[var(--z-nav)] hidden h-svh w-[7.5rem] shrink-0 flex-col justify-center border-r hairline lg:flex"
+      // `overflow-hidden` is load-bearing, not tidiness. The rail is z-50 and
+      // the page content is z-10, so anything that escapes this box paints ON
+      // TOP of the hero headline — which is what "EXPERIENCE" was doing, 24px
+      // past the edge, straight over the display type. The type sizing below
+      // makes the labels fit; this guarantees a future longer one cannot leak.
+      className="fixed left-0 top-0 z-[var(--z-nav)] hidden h-svh w-[7.5rem] shrink-0 flex-col justify-center overflow-hidden border-r hairline lg:flex"
     >
       <div
-        className="absolute left-8 top-1/2 h-[62%] w-px -translate-y-1/2 bg-hairline"
+        className="absolute left-5 top-1/2 h-[62%] w-px -translate-y-1/2 bg-hairline"
         aria-hidden
       >
         <div data-nav-progress className="h-full w-full origin-top scale-y-0 bg-acid" />
       </div>
 
-      <ul className="flex flex-col gap-7 pl-[3.25rem]">
+      {/*
+        Left padding buys the label column room. The rail is a fixed 7.5rem and
+        "EXPERIENCE" is the constraint: at the old 3.25rem inset it had 46px for
+        70px of text. Pulling the rule and dot leftward and tightening the label
+        below gets it under the width honestly, rather than letting it overflow.
+      */}
+      <ul className="flex flex-col gap-7 pl-8">
         {SECTIONS.map((section) => {
           const isActive = section.id === activeSection;
           return (
@@ -111,7 +122,7 @@ export function SideNav() {
                 >
                   {section.num}
                 </span>
-                <span className="font-mono text-[0.5625rem] uppercase tracking-[0.18em] opacity-60 transition-opacity duration-300 group-hover:opacity-100">
+                <span className="whitespace-nowrap font-mono text-[0.5rem] uppercase tracking-[0.12em] opacity-60 transition-opacity duration-300 group-hover:opacity-100">
                   {section.label}
                 </span>
               </a>
@@ -123,7 +134,7 @@ export function SideNav() {
       <span
         data-nav-dot
         aria-hidden
-        className="absolute left-[1.6875rem] top-0 size-[7px] rounded-full bg-acid opacity-0"
+        className="absolute left-[0.9375rem] top-0 size-[7px] rounded-full bg-acid opacity-0"
       />
     </nav>
   );

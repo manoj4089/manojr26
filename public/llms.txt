@@ -1,0 +1,23 @@
+# Manoj R.
+
+> Java full-stack software engineer (Java, Spring Boot, Angular, TypeScript, SQL) and AI application builder based in Chennai, India, open to remote work. Oracle Certified Professional — Java SE 11 Developer.
+
+Manoj R. is a Software Engineer at LTM Company, promoted from Trainee within five months. He also designs, builds and ships complete AI-directed products solo, using AI coding tools (Claude Code) end to end — architecture, backend, frontend, and deployment.
+
+## Experience
+
+- Software Engineer, LTM Company (Nov 2024 — Present): full-stack development in Java, Spring Boot, Angular, TypeScript and SQL; RESTful API design; OOP-based scalable backend services.
+- Software Developer Trainee, LTM Company (Jun 2024 — Nov 2024): Java full-stack training; frontend QA and UAT/Production validation; Adobe Analytics, Data Collection and Marketo.
+
+## Projects
+
+- Biasly — AI news analysis platform detecting political bias, sentiment and editorial framing across major news sources. Automated pipeline: Oxylabs scraping, validation and dedup, AI analysis via Vercel AI SDK, pgvector embeddings, hourly Vercel Cron scheduling. Stack: Next.js, TypeScript, Supabase, Vercel AI SDK, Oxylabs, pgvector, Claude Code. Live: https://biasly.app — Source: https://github.com/manoj4089/biasly
+- Spill — anonymous social app with mood-based matching, real-time chat and WebRTC voice, shipped to web, iOS and Android via Capacitor. Currently in progress.
+- KG Goat Farm — zero-build marketing site for a wholesale goat farm, built with plain HTML/CSS/JS, GSAP and Lenis. Live: https://manoj4089.github.io/kg-project/ — Source: https://github.com/manoj4089/kg-project
+
+## Contact
+
+- Email: manoj27sky@gmail.com
+- LinkedIn: https://linkedin.com/in/manoj-r-6391091b7
+- GitHub: https://github.com/manoj4089
+- Site: https://manojr.online
