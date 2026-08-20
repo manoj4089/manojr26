@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Archivo, Geist, Geist_Mono } from 'next/font/google';
+import { GoogleAnalytics } from '@next/third-parties/google';
 
 import { profile } from '@/data/profile';
 import './globals.css';
@@ -133,6 +134,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
         />
       </body>
+      <GoogleAnalytics gaId="G-ZK0DJL3EKK" />
     </html>
   );
 }
